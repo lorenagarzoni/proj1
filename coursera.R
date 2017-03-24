@@ -10,9 +10,8 @@ x<- factor (c("yes","yes", "no"))
 x
 table(x)
 
+# Missing values
 is.na()
-ddddd
-
 is.nan()
 
 # Data Frames
