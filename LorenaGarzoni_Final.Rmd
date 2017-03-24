@@ -1,0 +1,204 @@
+---
+title: "Final Exam"
+
+author: "Lorena Garzoni"
+date: "May 12, 2015"
+output: pdf_document
+---
+
+
+
+## Exercise 1 
+
+## a)
+```{r}
+set.seed(37)
+
+# Model 1 
+error = rnorm(400, 0, 1)
+s = c(rep(0,200), 10*exp(-(1:200)/40)*cos(2*pi*(201:400)/4))
+x_a = ts(s + error)
+plot(x_a, col= "blue",xlab= "Time", ylab = expression(S[t] + W[t]))
+```
+
+  On this graph it can be observed that at time 200 the periodic behavior of the signal can clearly be observed. However, the strength of this signal rapidly decreases and cannot be observed after time 300 due the white noise added to it.
+
+
+## b)
+```{r}
+# Model 2 
+d = c(rep(0,200), 10*exp(-(1:200)/400)*cos(2*pi*(201:400)/4))
+x_b = ts(d + error)
+plot(x_b, col= "green",xlab= "Time", ylab = expression(S[t] + W[t]))
+```
+
+
+  On this graph it can be observed that at time 200 the periodic behavior of the signal can clearly be observed. Unlike in part a), the signal is more persistent and can still be clearly observed at time 400. Note that the same errors were used in parts a) and b).
+
+
+## c)
+```{r}
+s_no_sin = c(rep(NA,200), 10*exp(-(1:200)/40))
+plot(s, type = "l", col = "blue", ylab = expression(S[t]), xlab = "Time")
+lines(s_no_sin, col = "red", lty = 2)
+lines(-s_no_sin, col = "red", lty = 2)
+
+d_no_sin = c(rep(NA,200), 10*exp(-(1:200)/400))
+plot(d, type = "l", col = "green", ylab = expression(S[t]), xlab = "Time")
+lines(d_no_sin, col = "red", lty = 2)
+lines(-d_no_sin, col = "red", lty = 2)
+```
+
+  In the two graphs above one can observe the signals of parts a) and b), respectively. It clearly appears that the strenght (or amplitude) of the first signal decreases faster than the one of the second signal. The red dotted lines indicate the bounduaries of the signals (i.e. cosine terms were replaces by 1 and -1) and illustrate further the rates of decay of both signals.
+
+```{r}
+t = 201:400
+s_with_sin_diff_part_a = c(rep(0,200), - 
+(exp(5 - t/40)*cos((pi*t)/2))/4 - 5*pi*exp(5 - t/40)*sin((pi*t)/2))
+s_with_sin_diff_part_b = c(rep(0,200), - 
+(exp(1/2 - t/400)*cos((pi*t)/2))/40 - 
+5*pi*exp(1/2 - t/400)*sin((pi*t)/2))
+plot(s_with_sin_diff_part_a, type = "l", 
+col = "blue", lty = 1, ylab = expression(dS[t]), xlab = "Time")
+lines(s_with_sin_diff_part_b, col = "green", lty = 2)
+legend("topleft", c("Derivatives signal (part a)","Derivatives signal (part b)"), col = c("blue","green"), lty = c(1,2))
+
+s_without_sin_diff_part_a = c(rep(0,200),-exp(5 - t/40)/4)
+s_without_sin_diff_part_b = c(rep(0,200), -exp(1/2 - t/400)/40)
+
+plot(s_without_sin_diff_part_a, type = "l", col = "blue", lty = 1, ylab = expression(dS[t]), xlab = "Time")
+lines(s_without_sin_diff_part_b, col = "green", lty = 2)
+legend("bottomleft", 
+c("Derivatives signal (part a)",
+"Derivatives signal (part b)"), col = c("blue","green"), lty = c(1,2))
+```
+
+  The two graph above present the first derivative of the signals from parts a) and b). In the first one the derivatives of the two signals are depicted while in the second graph the cosine terms where omitted therefore yielding to a smoother function. Both figures clearly show that the first signal has a faster rate of decay. In particular, on the second graph it can be observed that the derivative to the first function (excluding the cosine) is smaller (and smaller than 0) indicating a steeper (negative) slope compared the second function.
+
+```{r}
+plot(s_no_sin, type = "l", col = "blue", lty = 2)
+lines(d_no_sin, col = "green", lty = 2)
+legend("topleft", 
+c("Rate of decay (part a)","Rate of decay (part b)"), col = c("blue","green"), lty = c(1,2))
+```
+
+  The above graph shows the rates of decay for the two signals described in parts a) and b). Once again, it can clearly be observed that the first fonction has a faster rate of decay.
+
+## d)
+```{r}
+library(astsa)
+head(EQ5)
+head(EXP6)
+
+plot(EQ5, col= "green",xlab= "Time", ylab = expression(X[t]), main = "Earthquake time series (EQ5)")
+plot(EXP6, col= "blue",xlab= "Time", ylab = expression(Y[t]), main = "Mining explosion time series (EQ5)")
+```
+
+## e)
+
+  The earthquake time series is similar to series form part (b). Indeed, the similarity is the result of time between t = 1 to t = 200 (of the simulated time series) being noise and after t = 200 there is an event that generates a signal before dissipating. The second time series on the other hand similar to series from part (a). Theis resemblance is the result of time between t = 1 to t = 200(again on the simulated time series) being noise and after t = 200 there is an event that generates a very brief signal before returning back to noise.
+
+## f)
+
+  To avoid confusion between the signal of parts a) and b) we let $s_t$ denote the signal of part a) and use $d_t$ to denote the second signal. We also rename $x_t$ the time series from part b) so that $x_t = d_t + w_t$. Then, the mean fonctions $\mu_t^{(a)}$ and $\mu_t^{(b)}$ for the two models of parts a) and b), respectively, can be computed as follows:
+
+$$\mu_t^{(a)} = \mathbb{E}\left[y_t\right] = \mathbb{E}\left[s_t\right] + \mathbb{E}\left[w_t\right] = s_t$$
+
+and
+
+$$\mu_t^{(b)} = \mathbb{E}\left[x_t\right] = \mathbb{E}\left[d_t\right] + \mathbb{E}\left[w_t\right] = d_t.$$
+
+## g)
+Using the notation of part f), the autocovariance of the time series defined in part a) can be computed as follows:
+
+$$\gamma_{t,t'} = cov(y_t, y_{t'}) = cov(s_t + w_t, s_{t'} +w_{t'}) = cov(w_t, w_{t'}) = I_{t = t'}$$
+
+where $I$ denotes the indicator function. Indeed, the last equality is due the fact that $w_t$ is a (Gaussian) white noise and there $cov(w_t, w_{t'}) = 0$ if $t \neq t'$ and $cov(w_t, w_{t'}) = \sigma_w^2 = 1$ if $t = t'$ (since $cov(w_t, w_{t}) = var(w_t) = \sigma_w^2$). Similarly for the time series defined in part b), we have that
+
+$$\gamma_{t,t'} = cov(x_t, x_{t'}) = cov(d_t + w_t, d_{t'} +w_{t'}) = cov(w_t, w_{t'}) = I_{t = t'}.$$
+
+
+## Exercise 2 
+
+## a)
+
+```{r}
+library(quantmod)
+getSymbols("MSFT",  from="2007-12-31", to = "2014-12-31")
+
+# Prices at the close of the day
+Xt = Cl(MSFT)
+plot(Xt, main = "MSFT closing price")
+
+# Compute relative returns
+Yt = na.omit((Xt - lag(Xt))/lag(Xt))
+plot(Yt, main = "MSFT relative returns")
+```
+
+
+  From the plot of $X_t$ we can see that the trend was (on average) negative during the first year of observation, and attained the lowest point ($15) around April 2008. More specifically, prices increased rapidly from April 2009 to April 2010 ($30) and then decreased and remained stable around $25 per share from The trend was then (on average) positive for the remaining part of the observation period from June 2010 to January 2012. The trend was then (on average) positive.
+Prices increased sharply in the last portion of the period. 
+
+
+  From the plot of $Y_t$ we can notice that MSFT relative rerun’s amplitude is roughly stable during the observation period, except from the periods going from June 2008 to June 2009, and around June 2013. These two points corresponds two the periods characterized by a significant decrease, respectively, increase in stock market prices. This is a well-known phenomenon in finance called 
+"volatilty clustering", that refers to the fact that large changes tend to be followed by large changes, of either sign, and small changes tend to be followed by small changes.
+
+## b)
+
+```{r}
+# Compute log returns
+Rt = na.omit(log(Xt) - log(lag(Xt)))
+plot(Rt, main = "MSFT log returns")
+```
+
+  The figure above presents the log return of microsoft stock price. It can be observed that the log returns are very similar to the relative retruns computed in part a). In the next part, we will show that $r_t \approx Y_t$ using a Taylor expension which relies on the assumption that $X_t \approx X_{t-1}$. This explain why extreme returns are slightly different between relative and log returns. For example, the return on 10/13/2008 is 17.1\% for the log returns while is 18.6\% for the relative returns.
+
+## c)
+First we express $r_t$ in a slightly different manner. Indeed, we can write,
+
+$$r_t = ln(X_t) - ln(X_{t-1}) = ln \left(\frac{X_t}{X_{t-1}}\right) = ln \left(\frac{X_t}{X_{t-1}} - \frac{X_{t-1}}{X_{t-1}} + \frac{X_{t-1}}{X_{t-1}} \right) = ln \left( 1 + \frac{X_t - X_{t-1}}{X_{t-1}} \right). $$
+
+Then, we let $p = \frac{X_t - X_{t-1}}{X_{t-1}}$ which is close to 0 since we can assume that $X_t \approx X_{t-1}$. Morevoer, it can be shown using a Taylor expension around 1 that $ln(1 + p) \approx p$ for $|p|$ close to 0. Thus, we have that
+
+$$ r_t = ln \left( 1 + \frac{X_t - X_{t-1}}{X_{t-1}} \right) = ln \left( 1 + p \right) \approx p = \frac{X_t - X_{t-1}}{X_{t-1}} = Y_t.$$
+
+## d)
+```{r}
+library(forecast)
+mod = auto.arima(Xt)
+summary(mod)
+```
+
+  Using the auto.arima fonction we obtain an ARIMA(1,2,1) with autoregressive parameter of $-0.0502$, moving average parameter of $-0.9979$ and residual variance of $0.2495$. This model is possible overfitted since an ARIMA(0,1,0) (i.e. a random walk) is generally assume for stock prices.
+
+## e)
+```{r}
+# Simulate time series based on the model obtained in part d)
+Xt_sim = as.ts(arima.sim(n = length(Xt), list(order = c(1,2,1), ar = -0.0502, ma = -0.9979), sd = sqrt(0.2495)))
+
+# Add dates + add same intial value
+Xt_sim = Xt*0 + as.numeric(Xt_sim[1:length(Xt)]) + as.numeric(Xt[1])
+
+# Compare simulate and actual returns
+plot(Xt_sim, main = "Simulated Stock price")
+
+# Plot simulate stock price
+plot(Xt_sim, main = "Simulated Stock price")
+```
+
+  The above figure presents the simulated stock prices, which appears absolutely unreasonable. This also suggests that the model obtained in part d) is erroneous and probably over-fitted. To illustrate this statement we fit a simple random walk model show some simulated prices based on this model.
+
+
+```{r}
+# Estimate parameter of random walk
+sigma.hat = sd(na.omit(diff(Xt)))
+
+# Simulate random walk + add initial stock value
+Xt.sim = Xt*0 + cumsum(rnorm(length(Xt),0,sigma.hat)) + as.numeric(Xt[1])
+
+# Compare new model with actual stock prices
+plot(Xt.sim, ylim = range(rbind(Xt,Xt.sim)), main = "Simulated vs actual MSFT stock prices")
+lines(Xt, col = "blue")
+```
+
+  In the above figure the simulated (based on the random walk model) and actual stock prices are compared. The random walk model does not exibit any type of voltality culstering but still appears to provide a reasonable approximation of process govering stock prices.
