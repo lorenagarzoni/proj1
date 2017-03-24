@@ -11,6 +11,7 @@ x
 table(x)
 
 # Missing values
+# missing values are mean
 is.na()
 is.nan()
 
